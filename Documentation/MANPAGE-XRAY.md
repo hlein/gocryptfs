@@ -34,6 +34,8 @@ Is not needed and has no effect in `-dumpmasterkey` mode.
 #### -decrypt-paths
 Decrypt file paths using gocryptfs control socket. Reads from stdin.
 See `-ctlsock` in gocryptfs(1).
+With `-deterministic-names`, this also works for paths that do not
+exist on disk, with one exception for long names described there.
 
 #### -dumpmasterkey
 Decrypts and shows the master key.
@@ -41,6 +43,8 @@ Decrypts and shows the master key.
 #### -encrypt-paths
 Encrypt file paths using gocryptfs control socket. Reads from stdin.
 See `-ctlsock` in gocryptfs(1).
+With `-deterministic-names`, this also works for paths that do not
+exist on disk.
 
 EXAMPLES
 ========

@@ -111,6 +111,8 @@ This can prevent sync conflicts when synchronising files, but
 leaks information about identical file names across directories
 ("Identical names leak" in https://nuetzlich.net/gocryptfs/comparison/#file-names ).
 
+Also lets `-ctlsock` translate paths that do not exist on disk.
+
 The resulting `gocryptfs.conf` has "DirIV" missing from "FeatureFlags".
 
 #### -devrandom
@@ -224,6 +226,11 @@ used to decrypt and encrypt paths inside the filesystem. When using
 this option, make sure that the directory you place the socket in is
 not world-accessible. For example, `/run/user/UID/my.socket` would
 be suitable.
+
+With `-deterministic-names`, paths that do not exist on disk can be
+translated as well. The exception is decrypting a `gocryptfs.longname.*`
+name whose `.name` file is not on disk, as the hash cannot be reversed.
+Decrypt the contents of the `.name` file instead.
 
 #### -dev, -nodev
 Enable (`-dev`) or disable (`-nodev`) device files in a gocryptfs mount

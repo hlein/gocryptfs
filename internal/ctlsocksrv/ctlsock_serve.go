@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"io"
 	"net"
-	"os"
 	"syscall"
 
 	"github.com/rfjakob/gocryptfs/v2/ctlsock"
@@ -140,13 +139,11 @@ func sendResponse(conn *net.UnixConn, err error, result string, warnText string)
 	if err != nil {
 		msg.ErrText = err.Error()
 		msg.ErrNo = -1
-		// Try to extract the actual error number
-		if pe, ok := err.(*os.PathError); ok {
-			if se, ok := pe.Err.(syscall.Errno); ok {
-				msg.ErrNo = int32(se)
-			}
-		} else if err == syscall.ENOENT {
-			msg.ErrNo = int32(syscall.ENOENT)
+		// errors.As walks the wrap chain so any error built with
+		// fmt.Errorf("...: %w", syscall.Exxx) still surfaces the errno.
+		var se syscall.Errno
+		if errors.As(err, &se) {
+			msg.ErrNo = int32(se)
 		}
 	}
 	jsonMsg, err := json.Marshal(msg)
